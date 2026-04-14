@@ -55,6 +55,7 @@ Get a free key (50 calls/month) at [routekit.nexterait.com.br/static/signup.html
 - **snap_to_road** -- Snap a raw GPS coordinate to the nearest road segment. Returns the snapped point, distance from the original, and road name.
 - **isochrone** -- Area reachable from a point within N minutes by car. Returns a GeoJSON Polygon useful for coverage analysis, depot placement, and service area definition.
 - **geocode** -- Convert a Brazilian address or place name to latitude/longitude. Restricted to Brazil, in-house geocoder with no third-party dependency.
+- **geocode_batch** -- Geocode up to 50 addresses in a single call with parallel execution. Perfect for delivery manifests or client lists.
 - **reverse_geocode** -- Convert lat/lon to a human-readable Brazilian address with components (road, neighborhood, city, state, postcode).
 - **optimize_routes** -- Advanced VRP solver:
   - `tasks` (single-location jobs) and/or `shipments` (paired pickup+delivery, same vehicle)
@@ -77,6 +78,12 @@ Ask your AI assistant:
 > "Geocode these addresses and optimize 10 deliveries in Sao Paulo for 2 drivers -- the senior finishes each stop in 20 min, the junior in 45 min. Balance tasks evenly, end both at the same warehouse, include the route polylines so I can draw them on a map."
 
 The AI will call `geocode`, then `optimize_routes` with `vehicle.type`, `service_per_type`, `balance_mode`, `end_lat`/`end_lon` and `include_geometry` -- no manual coordinate entry needed.
+
+## What's new in 1.2.3
+
+- **`geocode_batch`**: new tool accepting up to 50 addresses per call. Internally runs queries in parallel with bounded concurrency.
+- **Mixed-profile fleets**: `optimize_routes` now fetches separate distance/duration matrices per vehicle profile (car/bike/foot). When a profile container isn't deployed, it falls back to car routing transparently.
+- **Smarter image check**: the weekly OSRM image check now queries registry tags and ranks stable semver releases (filtering debug/assertions/rc variants).
 
 ## What's new in 1.2.2
 

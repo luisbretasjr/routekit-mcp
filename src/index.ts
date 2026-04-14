@@ -43,7 +43,7 @@ async function main() {
   );
 
   const client = new Client(
-    { name: "routekit-proxy", version: "1.2.2" },
+    { name: "routekit-proxy", version: "1.2.3" },
     { capabilities: {} }
   );
 
@@ -51,7 +51,7 @@ async function main() {
 
   // Expose via stdio
   const server = new Server(
-    { name: "routekit-mcp", version: "1.2.2" },
+    { name: "routekit-mcp", version: "1.2.3" },
     { capabilities: { tools: {} } }
   );
 
