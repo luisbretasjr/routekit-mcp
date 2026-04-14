@@ -52,12 +52,20 @@ Get a free key (50 calls/month) at [routekit.nexterait.com.br/static/signup.html
 
 - **calculate_route** -- Driving route between points with real road distances and ETAs. Supports waypoints and encoded polyline geometry.
 - **distance_matrix** -- NxN distance/duration matrix between up to 2000 locations.
+- **snap_to_road** -- Snap a raw GPS coordinate to the nearest road segment. Returns the snapped point, distance from the original, and road name.
+- **isochrone** -- Area reachable from a point within N minutes by car. Returns a GeoJSON Polygon useful for coverage analysis, depot placement, and service area definition.
+- **geocode** -- Convert a Brazilian address or place name to latitude/longitude. Restricted to Brazil, self-hosted Nominatim backend.
+- **reverse_geocode** -- Convert lat/lon to a human-readable Brazilian address with components (road, neighborhood, city, state, postcode).
 - **optimize_routes** -- VRP solver powered by VROOM 1.15:
   - `tasks` (single-location jobs) and/or `shipments` (paired pickup+delivery, same vehicle)
   - Constraints: time windows (multiple per task), skills, multi-dimensional capacity, breaks, priorities
-  - Per-vehicle costs (`fixed`, `per_hour`, `per_km`), `max_tasks`, `max_travel_time_min`, `max_distance_km`
+  - Per-vehicle costs (`fixed`, `per_hour`, `per_km`, `per_task_hour`), `max_tasks`, `max_travel_time_min`, `max_distance_km`
   - `balance_mode`: `minimize_vehicles` (default), `balance_tasks`, or `minimize_distance`
   - `setup_min` separate from `service_min` (setup charged once per location)
+  - `setup_per_type` / `service_per_type` for different times per vehicle type (senior vs junior technician, van vs bike)
+  - `vehicle.type` tags for per-type time/cost modeling
+  - `end_lat` / `end_lon` for open routes with different destination (e.g. driver ends at home)
+  - Mixed-profile fleets (car / bike / foot) with per-vehicle `profile`
   - `include_geometry=true` returns encoded polylines per route (for maps)
   - Up to 500 tasks / 250 shipments / 100 vehicles per request
   - Route-level and step-level `violations` reported when constraints are tight
@@ -66,9 +74,18 @@ Get a free key (50 calls/month) at [routekit.nexterait.com.br/static/signup.html
 
 Ask your AI assistant:
 
-> "Optimize 10 deliveries in Sao Paulo for 2 drivers, balance tasks evenly, with lunch break at noon, include the route polylines so I can draw them on a map."
+> "Geocode these addresses and optimize 10 deliveries in Sao Paulo for 2 drivers -- the senior finishes each stop in 20 min, the junior in 45 min. Balance tasks evenly, end both at the same warehouse, include the route polylines so I can draw them on a map."
 
-The AI will call `optimize_routes` and return optimized routes with real road distances, balanced across drivers, with geometry ready to render.
+The AI will call `geocode`, then `optimize_routes` with `vehicle.type`, `service_per_type`, `balance_mode`, `end_lat`/`end_lon` and `include_geometry` -- no manual coordinate entry needed.
+
+## What's new in 1.2.0
+
+- **Geocoding**: new `geocode` and `reverse_geocode` tools (self-hosted Nominatim for Brazil). Users can speak in addresses instead of coordinates.
+- **Snap-to-road**: new `snap_to_road` tool to clean up noisy GPS before routing.
+- **Isochrone**: new `isochrone` tool to compute areas reachable in N minutes.
+- **VROOM 1.15 features**: `vehicle.type`, `setup_per_type`, `service_per_type`, `costs.per_task_hour` -- model senior/junior technician realism.
+- **Open routes**: `end_lat`/`end_lon` per vehicle for drivers that end at a different place than they started.
+- **Multi-profile fleets**: label vehicles with `profile` (car/bike/foot/truck).
 
 ## What's new in 1.1.0
 
