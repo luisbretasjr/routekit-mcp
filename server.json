@@ -1,0 +1,42 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.luisbretasjr/routekit",
+  "description": "Route optimization API for Brazil. Calculate routes, distance matrices, and optimize multi-stop delivery routes using real road network data. First MCP server for route optimization.",
+  "repository": {
+    "url": "https://github.com/luisbretasjr/routekit-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://routekit.nexterait.com.br/mcp",
+      "headers": [
+        {
+          "name": "X-API-Key",
+          "description": "Your RouteKit API key from https://routekit.nexterait.com.br/static/signup.html",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "routekit-mcp",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "ROUTEKIT_API_KEY",
+          "description": "Your RouteKit API key. Get one free at https://routekit.nexterait.com.br/static/signup.html",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

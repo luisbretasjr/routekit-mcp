@@ -1,0 +1,39 @@
+{
+  "name": "routekit-mcp",
+  "version": "1.0.0",
+  "mcpName": "io.github.luisbretasjr/routekit",
+  "description": "Route optimization MCP server for Brazil. Calculate routes, distance matrices, and optimize multi-stop deliveries using real road network data.",
+  "type": "module",
+  "bin": {
+    "routekit-mcp": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luisbretasjr/routekit-mcp"
+  },
+  "keywords": [
+    "mcp",
+    "route-optimization",
+    "brazil",
+    "routing",
+    "distance-matrix",
+    "vrp",
+    "delivery",
+    "field-service",
+    "last-mile",
+    "logistics"
+  ],
+  "author": "Nextera IT Solutions <luisbretasjr@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
