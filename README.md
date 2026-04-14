@@ -51,7 +51,7 @@ Get a free key (50 calls/month) at [routekit.nexterait.com.br/static/signup.html
 ## Tools
 
 - **calculate_route** -- Driving route between points with real road distances and ETAs. Supports waypoints and encoded polyline geometry.
-- **distance_matrix** -- NxN distance/duration matrix between up to 2000 locations.
+- **distance_matrix** -- NxN distance/duration matrix between up to 5000 locations (transparently chunked for large sets, cached for repeated queries).
 - **snap_to_road** -- Snap a raw GPS coordinate to the nearest road segment. Returns the snapped point, distance from the original, and road name.
 - **isochrone** -- Area reachable from a point within N minutes by car. Returns a GeoJSON Polygon useful for coverage analysis, depot placement, and service area definition.
 - **geocode** -- Convert a Brazilian address or place name to latitude/longitude. Restricted to Brazil, in-house geocoder with no third-party dependency.
@@ -77,6 +77,13 @@ Ask your AI assistant:
 > "Geocode these addresses and optimize 10 deliveries in Sao Paulo for 2 drivers -- the senior finishes each stop in 20 min, the junior in 45 min. Balance tasks evenly, end both at the same warehouse, include the route polylines so I can draw them on a map."
 
 The AI will call `geocode`, then `optimize_routes` with `vehicle.type`, `service_per_type`, `balance_mode`, `end_lat`/`end_lon` and `include_geometry` -- no manual coordinate entry needed.
+
+## What's new in 1.2.2
+
+- **Matrix cache**: repeated distance/duration matrix queries hit a local cache and return ~5x faster. Transparent to callers.
+- **Automatic chunking**: distance_matrix now handles up to 5000 locations by splitting into parallel sub-block queries.
+- **Retry + backoff**: all upstream calls now retry transient failures (connect errors, 5xx) with exponential backoff + jitter before surfacing an error.
+- **Cleaner error messages**: "temporarily unavailable" vs "no result found" so the LLM can decide whether to retry.
 
 ## What's new in 1.2.0
 
