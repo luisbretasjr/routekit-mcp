@@ -50,17 +50,35 @@ Get a free key (50 calls/month) at [routekit.nexterait.com.br/static/signup.html
 
 ## Tools
 
-- **calculate_route** -- Driving route between points with real road distances and ETAs
-- **distance_matrix** -- NxN distance/duration matrix between up to 200 locations
-- **optimize_routes** -- VRP solver: assign tasks to vehicles, optimize sequences, respect time windows, skills, capacity, breaks (up to 500 tasks)
+- **calculate_route** -- Driving route between points with real road distances and ETAs. Supports waypoints and encoded polyline geometry.
+- **distance_matrix** -- NxN distance/duration matrix between up to 2000 locations.
+- **optimize_routes** -- VRP solver powered by VROOM 1.15:
+  - `tasks` (single-location jobs) and/or `shipments` (paired pickup+delivery, same vehicle)
+  - Constraints: time windows (multiple per task), skills, multi-dimensional capacity, breaks, priorities
+  - Per-vehicle costs (`fixed`, `per_hour`, `per_km`), `max_tasks`, `max_travel_time_min`, `max_distance_km`
+  - `balance_mode`: `minimize_vehicles` (default), `balance_tasks`, or `minimize_distance`
+  - `setup_min` separate from `service_min` (setup charged once per location)
+  - `include_geometry=true` returns encoded polylines per route (for maps)
+  - Up to 500 tasks / 250 shipments / 100 vehicles per request
+  - Route-level and step-level `violations` reported when constraints are tight
 
 ## Example
 
 Ask your AI assistant:
 
-> "Optimize 10 deliveries in Sao Paulo for 2 drivers, with lunch break at noon"
+> "Optimize 10 deliveries in Sao Paulo for 2 drivers, balance tasks evenly, with lunch break at noon, include the route polylines so I can draw them on a map."
 
-The AI will call `optimize_routes` and return optimized routes with real road distances.
+The AI will call `optimize_routes` and return optimized routes with real road distances, balanced across drivers, with geometry ready to render.
+
+## What's new in 1.1.0
+
+- `shipments` (paired pickup+delivery) support
+- `balance_mode` to distribute tasks evenly across a fleet
+- `include_geometry` to return route polylines from the optimizer
+- Route `violations` now surfaced in the response for diagnosis
+- `setup_min` vs `service_min` split for realistic location costs
+- Matrix limit raised from 200 to 2000 locations
+- VROOM upgraded to 1.15.0: `per_km` costs and `max_distance_km` constraints now active
 
 ## Pricing
 
