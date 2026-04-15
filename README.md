@@ -57,6 +57,8 @@ Get a free key (50 calls/month) at [routekit.nexterait.com.br/static/signup.html
 - **geocode** -- Convert a Brazilian address or place name to latitude/longitude. Restricted to Brazil, in-house geocoder with no third-party dependency.
 - **geocode_batch** -- Geocode up to 50 addresses in a single call with parallel execution. Perfect for delivery manifests or client lists.
 - **reverse_geocode** -- Convert lat/lon to a human-readable Brazilian address with components (road, neighborhood, city, state, postcode).
+- **compare_routes** -- Run `optimize_routes` under multiple balance strategies (minimize_vehicles, balance_tasks, minimize_distance) and return a side-by-side comparison with winners per metric.
+- **validate_eta** -- Simulate a pre-defined route in Python and return the real arrival times plus any constraint violations. Use when you already have a fixed order of stops and just need the ETAs.
 - **optimize_routes** -- Advanced VRP solver:
   - `tasks` (single-location jobs) and/or `shipments` (paired pickup+delivery, same vehicle)
   - Constraints: time windows (multiple per task), skills, multi-dimensional capacity, breaks, priorities
@@ -68,6 +70,7 @@ Get a free key (50 calls/month) at [routekit.nexterait.com.br/static/signup.html
   - `end_lat` / `end_lon` for open routes with different destination (e.g. driver ends at home)
   - Mixed-profile fleets (car / bike / foot) with per-vehicle `profile`
   - `include_geometry=true` returns encoded polylines per route (for maps)
+  - `matrix_overrides`: user-provided per-pair travel time / distance overrides (for toll routes, restricted zones, known detours)
   - Up to 500 tasks / 250 shipments / 100 vehicles per request
   - Route-level and step-level `violations` reported when constraints are tight
 
@@ -78,6 +81,12 @@ Ask your AI assistant:
 > "Geocode these addresses and optimize 10 deliveries in Sao Paulo for 2 drivers -- the senior finishes each stop in 20 min, the junior in 45 min. Balance tasks evenly, end both at the same warehouse, include the route polylines so I can draw them on a map."
 
 The AI will call `geocode`, then `optimize_routes` with `vehicle.type`, `service_per_type`, `balance_mode`, `end_lat`/`end_lon` and `include_geometry` -- no manual coordinate entry needed.
+
+## What's new in 1.3.0
+
+- **`compare_routes`** tool: compare the optimizer under multiple strategies and get winners per metric (distance, travel time, vehicles used). Runs strategies in parallel.
+- **`validate_eta`** tool: simulate a pre-defined route and get real ETAs plus violations without re-optimizing. The sequence you provide is strictly respected.
+- **`matrix_overrides`** on optimize_routes: patch specific pairs in the distance/time matrix with your own values (toll routes, ferries, known detours) without forcing users to send a whole NxN matrix.
 
 ## What's new in 1.2.3
 
