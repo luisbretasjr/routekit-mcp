@@ -82,6 +82,12 @@ Ask your AI assistant:
 
 The AI will call `geocode`, then `optimize_routes` with `vehicle.type`, `service_per_type`, `balance_mode`, `end_lat`/`end_lon` and `include_geometry` -- no manual coordinate entry needed.
 
+## What's new in 1.4.1
+
+- **Per-tool analytics**: the dashboard now shows a breakdown of which tools your API key has been calling (horizontal bars, ordered by frequency).
+- **80% limit warning**: when your usage crosses 80% of the monthly limit, the dashboard shows a yellow banner reminding you to upgrade before new calls are rejected. `/billing/usage` also exposes `threshold_80` and `threshold_100` flags.
+- **Welcome email**: new customers get an onboarding email right after OTP verification, with their API key, ready-to-paste Claude Desktop config, a curl snippet and doc links.
+
 ## What's new in 1.4.0
 
 - **`calculate_route` turn-by-turn**: pass `include_steps=true` to get a list of maneuvers with street names, distances and durations per step.
