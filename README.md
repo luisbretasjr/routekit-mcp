@@ -50,11 +50,11 @@ Get a free key (50 calls/month) at [routekit.nexterait.com.br/static/signup.html
 
 ## Tools
 
-- **calculate_route** -- Driving route between points with real road distances and ETAs. Supports waypoints and encoded polyline geometry.
+- **calculate_route** -- Driving route between points with real road distances and ETAs. Supports waypoints, encoded polyline geometry, turn-by-turn steps, and up to 3 alternative routes.
 - **distance_matrix** -- NxN distance/duration matrix between up to 5000 locations (transparently chunked for large sets, cached for repeated queries).
 - **snap_to_road** -- Snap a raw GPS coordinate to the nearest road segment. Returns the snapped point, distance from the original, and road name.
 - **isochrone** -- Area reachable from a point within N minutes by car. Returns a GeoJSON Polygon useful for coverage analysis, depot placement, and service area definition.
-- **geocode** -- Convert a Brazilian address or place name to latitude/longitude. Restricted to Brazil, in-house geocoder with no third-party dependency.
+- **geocode** -- Convert a Brazilian address or place name to latitude/longitude. Restricted to Brazil, in-house geocoder with no third-party dependency. Built-in fuzzy fallback handles abbreviations ("Av" -> "Avenida"), accents, and token drops.
 - **geocode_batch** -- Geocode up to 50 addresses in a single call with parallel execution. Perfect for delivery manifests or client lists.
 - **reverse_geocode** -- Convert lat/lon to a human-readable Brazilian address with components (road, neighborhood, city, state, postcode).
 - **compare_routes** -- Run `optimize_routes` under multiple balance strategies (minimize_vehicles, balance_tasks, minimize_distance) and return a side-by-side comparison with winners per metric.
@@ -81,6 +81,14 @@ Ask your AI assistant:
 > "Geocode these addresses and optimize 10 deliveries in Sao Paulo for 2 drivers -- the senior finishes each stop in 20 min, the junior in 45 min. Balance tasks evenly, end both at the same warehouse, include the route polylines so I can draw them on a map."
 
 The AI will call `geocode`, then `optimize_routes` with `vehicle.type`, `service_per_type`, `balance_mode`, `end_lat`/`end_lon` and `include_geometry` -- no manual coordinate entry needed.
+
+## What's new in 1.4.0
+
+- **`calculate_route` turn-by-turn**: pass `include_steps=true` to get a list of maneuvers with street names, distances and durations per step.
+- **`calculate_route` alternatives**: pass `alternatives=1..3` to get alternate routes (useful for "fastest vs shortest vs no-toll" comparisons).
+- **Fuzzy geocoding**: `geocode` now silently retries with abbreviation expansion ("Av" -> "Avenida"), accent normalization and token-drop heuristics when the exact query returns nothing. The response includes `variant_used` showing which transformation matched. Set `fuzzy=false` to disable.
+- **REST API**: the same 10 tools are now available via plain HTTP POST under `https://routekit.nexterait.com.br/v1/<tool_name>`. Same X-API-Key auth, same metering. The public `GET /v1/` lists all endpoints with their descriptions. Useful for integrations that don't speak MCP.
+- **Billing portal return flow**: after managing a subscription on Stripe, the user lands back on the dashboard with a success banner instead of a raw JSON page.
 
 ## What's new in 1.3.0
 
